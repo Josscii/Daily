@@ -590,11 +590,6 @@ function initAppUI() {
                 "通知",
                 "统计"
             ]
-        },
-        {
-            rows: [
-                "关于"
-            ]
         }
     ]
 
@@ -627,7 +622,7 @@ function initAppUI() {
                                 pushToNotifiList()
                             } else if (indexPath.row == 4) {
                                 $ui.alert({
-                                    title: "统计功能将在下个版本上线",
+                                    title: "统计功能稍后上线",
                                     message: "",
                                 })
                             }
@@ -875,7 +870,7 @@ function scheduleDrinkNotification() {
             body: drinkModel.notiText + padding,
             date: beginDate,
             handler: function(result) {// 方法是异步的
-                var id = result.id
+                let id = result.id
                 drinkModel.notiIds.push(id)
             }
         })
@@ -1104,7 +1099,7 @@ function scheduleStandNotification(on) {
             body: standModel.notiText + padding,
             date: beginDate,
             handler: function(result) {
-                var id = result.id
+                let id = result.id
                 standModel.notiIds.push(id)
             }
         })
@@ -1207,7 +1202,25 @@ function pushToTomatoSetting() {
 function getNotifiList() {
     notifiList = []
     notifiModel.forEach(notifi => {
-        notifiList.push(notifi.content)
+
+        const n = {
+            title: {
+                text: notifi.content
+            },
+            value: {
+                get text() {
+                    const year = notifi.date.getFullYear()
+                    const month = notifi.date.getMonth()
+                    const day = notifi.date.getDate()
+                    const hour = notifi.date.getHours()
+                    const min = notifi.date.getMinutes()
+
+                    return year + "/" + month + "/" + day + " " + hour + ":" + min
+                }
+            }
+        }
+
+        notifiList.push(n)
     })
 }
 
@@ -1223,19 +1236,52 @@ function pushToNotifiList() {
                 type: "list",
                 props: {
                     id: "notiList",
+                    contentInset: $insets(0, 0, 70, 0),
                     data: notifiList,
                     actions: [
                         {
                             title: "delete",
                             color: $color("gray"), // default to gray
                             handler: function(sender, indexPath) {
+                                const notifi = notifiModel[indexPath.row]
+                                cancelNotification(notifi)
+
                                 notifiModel.splice(indexPath.row, 1)
                                 getNotifiList()
                                 sender.data = notifiList
                             }
                         }
                     ],
-                    contentInset: $insets(0, 0, 70, 0)
+                    template: {
+                        props: {
+                            accessoryType: 1
+                        },
+                        views: [
+                            {
+                                type: "label",
+                                props: {
+                                    id: "title"
+                                },
+                                layout: function(make, view) {
+                                    make.centerY.equalTo(view.super)
+                                    make.left.inset(15)
+                                }
+                            },
+                            {
+                                type: "label",
+                                props: {
+                                    id: "value",
+                                    font: $font(13),
+                                    color: $color("gray")
+                                },
+                                layout: function(make, view) {
+                                    make.centerY.equalTo(view.super)
+                                    make.right.equalTo(view.super)
+                                    make.left.greaterThanOrEqualTo(view.prev.right).offset(20)
+                                }
+                            }
+                        ]
+                    }
                 },
                 layout: $layout.fill
             },
@@ -1250,27 +1296,49 @@ function pushToNotifiList() {
                 },
                 events: {
                     tapped: function(sender) {
-                        $input.text({
-                            placeholder: "提醒",
-                            handler: function(text) {
-                                $picker.date({
-                                    handler: function(date) {
-                                        const notifi = {
-                                            content: text,
-                                            "date": date
-                                        }
-
-                                        notifiModel.splice(0, 0, notifi)
-                                        getNotifiList()
-                                        $("notiList").data = notifiList
-                                    }
-                                })
-                            }
-                        })
+                        addNotifi()
                     }
                 }
             }
         ]
+    })
+}
+
+function addNotifi() {
+    $input.text({
+        placeholder: "提醒",
+        handler: function(text) {
+            $picker.date({
+                handler: function(date) {
+                    const notifi = {
+                        content: text,
+                        "date": date
+                    }
+
+                    scheduleNotification(notifi)
+                }
+            })
+        }
+    })
+}
+
+function scheduleNotification(notifi) {
+    $push.schedule({
+        title: "日常提醒",
+        body: notifi.content,
+        date: notifi.date,
+        handler: function(result) {
+            notifi.id = result.id
+            notifiModel.splice(0, 0, notifi)
+            getNotifiList()
+            $("notiList").data = notifiList
+        }
+    })
+}
+
+function cancelNotification(notifi) {
+    $push.cancel({
+        id: notifi.id
     })
 }
 
