@@ -1,0 +1,23 @@
+{
+  "info": {
+    "name": "日常",
+    "url": "",
+    "version": "1.0.0",
+    "author": "Josscii",
+    "website": "https://github.com/Josscii/Daily",
+    "types": 0
+  },
+  "settings": {
+    "minSDKVer": "1.0.0",
+    "minOSVer": "10.0.0",
+    "idleTimerDisabled": false,
+    "autoKeyboardEnabled": false,
+    "keyboardToolbarEnabled": false,
+    "rotateDisabled": false
+  },
+  "widget": {
+    "height": 110,
+    "tintColor": "",
+    "iconColor": ""
+  }
+}
