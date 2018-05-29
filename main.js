@@ -644,10 +644,7 @@ function initAppUI() {
                             } else if (indexPath.row == 3) {
                                 pushToNotifiList()
                             } else if (indexPath.row == 4) {
-                                $ui.alert({
-                                    title: "统计功能稍后上线",
-                                    message: "",
-                                })
+                                pushToStatistics()
                             }
                         } else {
                             
@@ -1409,6 +1406,55 @@ function scheduleNotification(notifi) {
 function cancelNotification(notifi) {
     $push.cancel({
         id: notifi.id
+    })
+}
+
+//-------------------------------- 统计
+
+function pushToStatistics() {
+    const file = $file.read("statistics.html")
+
+    const drinkTimes = drinkModel.days[0].times
+    const drinkMLs = drinkTimes * drinkModel.ml
+    let greatOrEqualTimes1 = 0
+    for (let index = 1; index < drinkModel.days.length; index++) {
+        const day = drinkModel.days[index];
+        if (day.times < drinkTimes) {
+            greatOrEqualTimes1 += 1
+        }
+    }
+    const drinkPer = greatOrEqualTimes1 / drinkModel.days.length
+
+    const standTimes = standModel.days[0].times
+    let greatOrEqualTimes2 = 0
+    for (let index = 1; index < standModel.days.length; index++) {
+        const day = standModel.days[index];
+        if (day.times < standTimes) {
+            greatOrEqualTimes2 += 1
+        }
+    }
+    const standPer = greatOrEqualTimes2 / standModel.days.length
+
+    let htmlStr = file.string
+    htmlStr = htmlStr.replace("{0}", drinkTimes)
+    htmlStr = htmlStr.replace("{1}", drinkMLs)
+    htmlStr = htmlStr.replace("{2}", `${drinkPer}%`)
+    htmlStr = htmlStr.replace("{3}", standTimes)
+    htmlStr = htmlStr.replace("{4}", `${standPer}%`)
+
+    $ui.push({
+        props: {
+            title: " 统计"
+        },
+        views: [
+            {
+                type: "web",
+                props: {
+                    html: htmlStr
+                },
+                layout: $layout.fill
+            }
+        ]
     })
 }
 
