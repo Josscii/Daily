@@ -1414,6 +1414,34 @@ function cancelNotification(notifi) {
 function pushToStatistics() {
     const file = $file.read("statistics.html")
 
+    const drinkTimes = drinkModel.days[0].times
+    const drinkMLs = drinkTimes * drinkModel.ml
+    let greatOrEqualTimes1 = 0
+    for (let index = 1; index < drinkModel.days.length; index++) {
+        const day = drinkModel.days[index];
+        if (day.times < drinkTimes) {
+            greatOrEqualTimes1 += 1
+        }
+    }
+    const drinkPer = greatOrEqualTimes1 / drinkModel.days.length
+
+    const standTimes = standModel.days[0].times
+    let greatOrEqualTimes2 = 0
+    for (let index = 1; index < standModel.days.length; index++) {
+        const day = standModel.days[index];
+        if (day.times < standTimes) {
+            greatOrEqualTimes2 += 1
+        }
+    }
+    const standPer = greatOrEqualTimes2 / standModel.days.length
+
+    let htmlStr = file.string
+    htmlStr = htmlStr.replace("{0}", drinkTimes)
+    htmlStr = htmlStr.replace("{1}", drinkMLs)
+    htmlStr = htmlStr.replace("{2}", `${drinkPer}%`)
+    htmlStr = htmlStr.replace("{3}", standTimes)
+    htmlStr = htmlStr.replace("{4}", `${standPer}%`)
+
     $ui.push({
         props: {
             title: " 统计"
@@ -1422,48 +1450,7 @@ function pushToStatistics() {
             {
                 type: "web",
                 props: {
-                    get html() {
-                        return file.string
-                    },
-                    script: function() {
-                        var ctx = document.getElementById("myChart").getContext('2d');
-                        var myChart = new Chart(ctx, {
-                            type: 'line',
-                            data: {
-                                labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-                                datasets: [{
-                                    label: '# of Votes',
-                                    data: ["12 ml", "12 ml", "12 ml", "12 ml", "12 ml", "12 ml"],
-                                    backgroundColor: [
-                                        'rgba(255, 99, 132, 0.2)',
-                                        'rgba(54, 162, 235, 0.2)',
-                                        'rgba(255, 206, 86, 0.2)',
-                                        'rgba(75, 192, 192, 0.2)',
-                                        'rgba(153, 102, 255, 0.2)',
-                                        'rgba(255, 159, 64, 0.2)'
-                                    ],
-                                    borderColor: [
-                                        'rgba(255,99,132,1)',
-                                        'rgba(54, 162, 235, 1)',
-                                        'rgba(255, 206, 86, 1)',
-                                        'rgba(75, 192, 192, 1)',
-                                        'rgba(153, 102, 255, 1)',
-                                        'rgba(255, 159, 64, 1)'
-                                    ],
-                                    borderWidth: 1
-                                }]
-                            },
-                            options: {
-                                scales: {
-                                    yAxes: [{
-                                        ticks: {
-                                            beginAtZero:true
-                                        }
-                                    }]
-                                }
-                            }
-                        });
-                    }
+                    html: htmlStr
                 },
                 layout: $layout.fill
             }
