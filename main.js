@@ -118,7 +118,8 @@ function getTomatoData() {
         interval : 25,
         beginDate: null,
         state: 0, // 0 初始 1 开始 2 暂停
-        remainSeconds: 0
+        remainSeconds: 0,
+        notifiOnEnded: true
     }
 
     const tomato = $cache.get(TOMATO_MODEL_KEY)
@@ -181,6 +182,8 @@ function restartTimerIfNeeded() {
                 }
             })
         }
+    } else {
+        tomatoModel.state = 0
     }
 }
 
@@ -438,6 +441,15 @@ function initWidgetUI() {
                                 }
                             }
                         })
+
+                        if (tomatoModel.notifiOnEnded) {
+                            const tomatoNotifiDate =  new Date(tomatoModel.beginDate.getTime() + tomatoModel.interval*60000);
+                            $push.schedule({
+                                title: "本次专注结束啦！",
+                                body: "休息一会吧！",
+                                date: tomatoNotifiDate
+                            })
+                        }
                     },
                     doubleTapped: function(sender) {
                         if (tomatoModel.state == 0) {
@@ -452,6 +464,11 @@ function initWidgetUI() {
     
                         sender.get("emoji").alpha = 1
                         sender.get("times").text = ""
+
+                        $push.cancel({
+                            title: "本次专注结束啦！",
+                            body: "休息一会吧！"
+                        })
                     },
                     longPressed: function(sender) {
                         openURL("tomato")
@@ -1128,14 +1145,61 @@ function resetStandNotification() {
 function pushToTomatoSetting() {
     tomatoSettingData = [
         {
-            title: {
-                text: "持续时间"
-            },
-            value: {
-                get text() {
-                    return tomatoModel.interval + " 分钟"
+            rows: [
+                {
+                    title: {
+                        text: "持续时间"
+                    },
+                    value: {
+                        get text() {
+                            return tomatoModel.interval + " 分钟"
+                        }
+                    }
                 }
-            }
+            ]
+        },
+        {
+            title: "开启和关闭从下次开始番茄钟生效",
+            rows: [
+                {
+                    type: "view",
+                    props: {
+                        accessoryType: 1
+                    },
+                    views: [
+                        {
+                            type: "label",
+                            props: {
+                                id: "title",
+                                text: "结束时提醒"
+                            },
+                            layout: function(make, view) {
+                                make.centerY.equalTo(view.super)
+                                make.left.inset(15)
+                            }
+                        },
+                        {
+                            type: "switch",
+                            props: {
+                                id: "switch",
+                                get on() {
+                                    return tomatoModel.notifiOnEnded
+                                }
+                            },
+                            layout: function(make, view) {
+                                make.centerY.equalTo(view.super)
+                                make.right.inset(15)
+                            },
+                            events: {
+                                changed: function(sender) {
+                                    tomatoModel.notifiOnEnded = sender.on
+                                }
+                            }
+                        }
+                    ],
+                    layout: $layout.fill
+                }
+            ]
         }
     ]
 
