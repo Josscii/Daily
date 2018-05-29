@@ -2,7 +2,7 @@
 
 日常是一个基于 JSBox 的小应用。
 
-[下载 Daily](https://xteko.com/redir?name=Daily&url=https://github.com/Josscii/Daily.git)
+[下载 Daily](https://github.com/Josscii/Daily/releases)
 
 ## 功能介绍
 
