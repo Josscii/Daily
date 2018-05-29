@@ -412,6 +412,12 @@ function initWidgetUI() {
                         if (tomatoModel.state == 1) {
                             tomatoModel.state = 2
                             timer.invalidate()
+
+                            //暂停时取消推送
+                            $push.cancel({
+                                title: "本次专注结束啦！",
+                                body: "休息一会吧！"
+                            })
                             return
                         }
     
@@ -443,7 +449,7 @@ function initWidgetUI() {
                         })
 
                         if (tomatoModel.notifiOnEnded) {
-                            const tomatoNotifiDate =  new Date(tomatoModel.beginDate.getTime() + tomatoModel.interval*60000);
+                            const tomatoNotifiDate =  new Date(new Date().getTime() + tomatoModel.remainSeconds*1000)
                             $push.schedule({
                                 title: "本次专注结束啦！",
                                 body: "休息一会吧！",
