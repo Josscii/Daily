@@ -1438,9 +1438,9 @@ function pushToStatistics() {
     let htmlStr = file.string
     htmlStr = htmlStr.replace("{0}", drinkTimes)
     htmlStr = htmlStr.replace("{1}", drinkMLs)
-    htmlStr = htmlStr.replace("{2}", `${drinkPer}%`)
+    htmlStr = htmlStr.replace("{2}", `${drinkPer * 100}%`)
     htmlStr = htmlStr.replace("{3}", standTimes)
-    htmlStr = htmlStr.replace("{4}", `${standPer}%`)
+    htmlStr = htmlStr.replace("{4}", `${standPer * 100}%`)
 
     $ui.push({
         props: {
