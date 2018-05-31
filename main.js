@@ -1466,6 +1466,8 @@ function pushToStatistics() {
 //---------------------------------
 
 function pushToOthers() {
+    config = JSON.parse($file.read("_config.json").string)
+
     const otherData = [
         {
             rows: [
@@ -1474,7 +1476,7 @@ function pushToOthers() {
                         text: "检查更新"
                     },
                     value: {
-                        text: $addin.current.version
+                        text: config.version
                     }
                 },
                 {
@@ -1533,13 +1535,17 @@ function pushToOthers() {
                         if (indexPath.row == 0) {
                             checkUpdate()
                         } else if (indexPath.row == 1) {
-
+                            gotoMyWeibo()
                         }
                     }
                 }
             }
         ]
     })
+}
+
+function gotoMyWeibo() {
+    $app.openURL("weibo://userinfo?uid=2268468831")
 }
 
 const LEANCLOUD_APP_ID = "ysUuE04Lk4BW3BHFKx1D0J8m-gzGzoHsz"
@@ -1564,7 +1570,7 @@ function checkUpdate() {
                 const version = result.version
                 const updateInfo = result.updateInfo
 
-                const currentVersion = $addin.current.version
+                const currentVersion = config.version
 
                 if (version.localeCompare(currentVersion) == 1) {
                     $ui.alert({
@@ -1579,7 +1585,7 @@ function checkUpdate() {
                           {
                             title: "更新",
                             handler: function() {
-                                
+                                replaceAddin()
                             }
                           }
                         ]
@@ -1590,15 +1596,21 @@ function checkUpdate() {
             } else {
                 $ui.toast("貌似网络有问题😢")
             }
-
         }
     })
+}
+
+// 感谢 RYAN
+function replaceAddin() {
+    var url = `jsbox://install?url=${encodeURIComponent(config.url)}&name=${encodeURIComponent(config.name)}&types=${encodeURIComponent(config.types)}`
+    $app.openURL(url)
+    $app.close()
 }
 
 //--------------------------------- 外部
 
 function openURL(id) {
-    $app.openURL(`jsbox://run?name=${encodeURI($addin.current.name)}&id=${id}`)
+    $app.openURL(`jsbox://run?name=${encodeURIComponent($addin.current.name)}&id=${id}`)
 }
 
 function routeToPageIfNeeded() {
