@@ -1573,10 +1573,10 @@ function checkUpdate() {
 
             if (response.statusCode == 200) {
                 const data = resp.data
-                const result = data.results[0]
+                const result = data.results.pop()
                 const version = result.version
                 const updateInfo = result.updateInfo
-
+                
                 const currentVersion = config.version
 
                 if (version.localeCompare(currentVersion) == 1) {
