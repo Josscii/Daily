@@ -647,7 +647,7 @@ function initAppUI() {
                             } else if (indexPath.row == 2) {
                                 pushToTomatoSetting()
                             } else if (indexPath.row == 3) {
-                                pushToNotifiList()
+                                pushToNotifiList(false)
                             } else if (indexPath.row == 4) {
                                 pushToStatistics()
                             }
@@ -1296,7 +1296,7 @@ function getNotifiList() {
     })
 }
 
-function pushToNotifiList() {
+function pushToNotifiList(beginEdting) {
     getNotifiList()
 
     $ui.push({
@@ -1372,7 +1372,14 @@ function pushToNotifiList() {
                     }
                 }
             }
-        ]
+        ],
+        events: {
+            didAppear: function() {
+                if (beginEdting) {
+                    addNotifi()
+                }
+            }
+        }
     })
 }
 
@@ -1623,6 +1630,6 @@ function routeToPageIfNeeded() {
     } else if (id === "tomato") {
         pushToTomatoSetting()
     } else if (id === "notifi") {
-        pushToNotifiList()
+        pushToNotifiList(true)
     }
 }
