@@ -29,6 +29,8 @@ const DRINK_MODEL_KEY = "DRINK_MODEL_KEY"
 const STAND_MODEL_KEY = "STAND_MODEL_KEY"
 const TOMATO_MODEL_KEY = "TOMATO_MODEL_KEY"
 const NOTIFI_MODEL_KEY = "NOTIFI_MODEL_KEY"
+const NOTIFI_ALERT_MESSAGE = "注意：目前通知开启后，点击即可关闭通知；但是，如果你在开启通知状态下卸载该脚本，开启的通知将无法自动清除，必须通过另外一个脚本清除。"
+const NOTIFI_ALERT_TITLE = "是否确认要开启通知"
 
 function getData() {
     getDrinkData()
@@ -712,10 +714,29 @@ function pushToDrinkSetting() {
                             },
                             events: {
                                 changed: function(sender) {
-                                    drinkModel.notifi = sender.on
                                     if (sender.on) {
-                                        scheduleDrinkNotification()
+                                        $ui.alert({
+                                            title: NOTIFI_ALERT_TITLE,
+                                            message: NOTIFI_ALERT_MESSAGE,
+                                            actions: [
+                                                {
+                                                    title: "算了",
+                                                    handler: function() {
+                                                        sender.on = false
+                                                        drinkModel.notifi = false
+                                                    }
+                                                },
+                                                {
+                                                    title: "我知道了",
+                                                    handler: function() {
+                                                        drinkModel.notifi = true
+                                                        scheduleDrinkNotification()
+                                                    }
+                                                }
+                                            ]
+                                        })
                                     } else {
+                                        drinkModel.notifi = false
                                         cancelDrinkNotification()
                                     }
                                 }
@@ -953,10 +974,29 @@ function pushToStandSetting() {
                     },
                     events: {
                         changed: function(sender) {
-                            standSettingData.notifi = sender.on
                             if (sender.on) {
-                                scheduleStandNotification()
+                                $ui.alert({
+                                    title: NOTIFI_ALERT_TITLE,
+                                    message: NOTIFI_ALERT_MESSAGE,
+                                    actions: [
+                                        {
+                                            title: "算了",
+                                            handler: function() {
+                                                sender.on = false
+                                                standModel.notifi = false
+                                            }
+                                        },
+                                        {
+                                            title: "我知道了",
+                                            handler: function() {
+                                                standModel.notifi = true
+                                                scheduleStandNotification()
+                                            }
+                                        }
+                                    ]
+                                })
                             } else {
+                                standModel.notifi = false
                                 cancelStandNotification()
                             }
                         }
@@ -1495,6 +1535,15 @@ function pushToOthers() {
                     }
                 }
             ]
+        },
+        {
+            rows: [
+                {
+                    title: {
+                        text: "清除所有本脚本通知"
+                    }
+                }
+            ]
         }
     ]
 
@@ -1539,16 +1588,27 @@ function pushToOthers() {
                 layout: $layout.fill,
                 events: {
                     didSelect: function(sender, indexPath, data) {
-                        if (indexPath.row == 0) {
-                            checkUpdate()
-                        } else if (indexPath.row == 1) {
-                            gotoMyWeibo()
+                        if (indexPath.section == 0) {
+                            if (indexPath.row == 0) {
+                                checkUpdate()
+                            } else if (indexPath.row == 1) {
+                                gotoMyWeibo()
+                            }
+                        } else {
+                            if (indexPath.row == 0) {
+                                clearAllNotifications()
+                            }
                         }
                     }
                 }
             }
         ]
     })
+}
+
+function clearAllNotifications() {
+    cancelDrinkNotification()
+    cancelStandNotification()
 }
 
 function gotoMyWeibo() {
