@@ -1,23 +1,23 @@
 {
-  "info": {
-    "name": "Daily",
-    "version": "1.0.0",
-    "types": 3,
-    "url": "https://raw.githubusercontent.com/Josscii/Daily/master/.output/daily.box",
-    "author": "Josscii",
-    "website": "https://github.com/Josscii/Daily"
+  "settings" : {
+    "minOSVer" : "10.0.0",
+    "minSDKVer" : "1.0.0",
+    "idleTimerDisabled" : false,
+    "autoKeyboardEnabled" : false,
+    "keyboardToolbarEnabled" : false,
+    "rotateDisabled" : false
   },
-  "settings": {
-    "minSDKVer": "1.0.0",
-    "minOSVer": "10.0.0",
-    "idleTimerDisabled": false,
-    "autoKeyboardEnabled": false,
-    "keyboardToolbarEnabled": false,
-    "rotateDisabled": false
+  "info" : {
+    "version" : "1.0.0",
+    "author" : "",
+    "types" : 15,
+    "name" : "",
+    "url" : "",
+    "website" : ""
   },
-  "widget": {
-    "height": 110,
-    "tintColor": "",
-    "iconColor": ""
+  "widget" : {
+    "height" : 0,
+    "tintColor" : "",
+    "iconColor" : ""
   }
 }
