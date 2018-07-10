@@ -194,6 +194,13 @@ function checkUpdate() {
     })
 }
 
+// 感谢 RYAN
+function replaceAddin() {
+    var url = `jsbox://install?url=${encodeURIComponent(config.url)}&name=${encodeURIComponent(config.name)}&types=${encodeURIComponent(config.types)}`
+    $app.openURL(url)
+    $app.close()
+}
+
 module.exports = {
     push: push
 }
