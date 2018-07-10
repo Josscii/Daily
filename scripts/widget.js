@@ -244,6 +244,10 @@ function main() {
                                 },
                                 events: {
                                     tapped: function(sender) {
+                                        if (dataManager.isTapticOn()) {
+                                            $device.taptic(0)
+                                        }
+
                                         const cell = sender.super.super
                                         const matrix = $("matrix")
                                         const index = matrix.runtimeValue().invoke("indexPathForCell", cell).rawValue()

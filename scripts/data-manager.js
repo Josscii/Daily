@@ -2,6 +2,7 @@ const TOOL_TYPE_NOTIFICATION = 3;
 const TOOL_TYPE_CHECK = 4;
 const MAIN_DATA_CACHE_KEY = "main-data"
 const WIDGET_DATA_SHOULD_RELOAD_CACHE_KEY = "widget-data-should-reload"
+const TAPTIC_ON_CACHE_KEY = "taptic-on"
 
 function init() {
     let mainData = getCachedMainData()
@@ -50,9 +51,19 @@ function cacheWidgetDataShouldReload() {
     $cache.set(WIDGET_DATA_SHOULD_RELOAD_CACHE_KEY, 1)
 }
 
+function isTapticOn() {
+    return $cache.get(TAPTIC_ON_CACHE_KEY) || false
+}
+
+function setTapticOn(on) {
+    $cache.set(TAPTIC_ON_CACHE_KEY, on)
+}
+
 module.exports = {
     init: init,
     getCachedMainData: getCachedMainData,
     cacheMainData: cacheMainData,
-    getWidgetDataShouldReload: getWidgetDataShouldReload
+    getWidgetDataShouldReload: getWidgetDataShouldReload,
+    isTapticOn: isTapticOn,
+    setTapticOn: setTapticOn
 }

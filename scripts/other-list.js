@@ -1,3 +1,5 @@
+var dataManager = require('scripts/data-manager')
+
 function push() {
     config = JSON.parse($file.read("_config.json").string)
 
@@ -28,6 +30,44 @@ function push() {
                     title: {
                         text: "清除缓存"
                     }
+                },
+                {
+                    type: "view",
+                    props: {
+                        accessoryType: 1
+                    },
+                    views: [
+                        {
+                            type: "label",
+                            props: {
+                                id: "title",
+                                text: "触感反馈"
+                            },
+                            layout: function(make, view) {
+                                make.centerY.equalTo(view.super)
+                                make.left.inset(15)
+                            }
+                        },
+                        {
+                            type: "switch",
+                            props: {
+                                id: "switch",
+                                get on() {
+                                    return dataManager.isTapticOn()
+                                }
+                            },
+                            layout: function(make, view) {
+                                make.centerY.equalTo(view.super)
+                                make.right.inset(15)
+                            },
+                            events: {
+                                changed: function(sender) {
+                                    dataManager.setTapticOn(sender.on)
+                                }
+                            }
+                        }
+                    ],
+                    layout: $layout.fill
                 }
             ]
         }
