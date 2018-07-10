@@ -245,7 +245,7 @@ function main() {
                                 events: {
                                     tapped: function(sender) {
                                         if (dataManager.isTapticOn()) {
-                                            $device.taptic(0)
+                                            $device.taptic(1)
                                         }
 
                                         const cell = sender.super.super
