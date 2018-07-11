@@ -188,6 +188,11 @@ function tappedCheck(checkItem, sender) {
             return
         }
 
+        if (new Date() > checkItem.endDate) {
+            $ui.toast("打卡时间已过哦")
+            return
+        }
+
         checkItem.state = 1
         dataManager.cacheMainData(mainData)
 

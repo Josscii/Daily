@@ -22,6 +22,11 @@ function init() {
         if (n.type == TOOL_TYPE_CHECK) {
             n.beginDate.setDate(new Date().getDate())
             n.endDate.setDate(new Date().getDate())
+            
+            const now = new Date()
+            if (now > n.endDate || now < n.beginDate) {
+                n.state = 0
+            }
         }
     })
     
