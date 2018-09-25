@@ -143,7 +143,7 @@ function push(beginEditing) {
             }
         ],
         events: {
-            didAppear: function() {
+            appeared: function() {
                 if (beginEditing) {
                     addNotification()
                 }

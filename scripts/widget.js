@@ -331,7 +331,7 @@ function main() {
             }
         ],
         events: {
-            didAppear: function() {
+            appeared: function() {
                 if (isFirstDidAppear) {
                     $delay(0.1, function() {
                         for (let index = 0; index < mainData.length; index++) {

@@ -111,7 +111,7 @@ function main() {
             }
         ],
         events: {
-            didAppear: function () {
+            appeared: function () {
                 if (isFirstDidAppear) {
                     isFirstDidAppear = false
 
